@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# systemd doesn't like symlinks here
+cp /app/emperor.uwsgi.service /etc/systemd/system/emperor.uwsgi.service
+
+# we don't use a symlink here because we want
+# a fresh vassals dir on every start
+cp -r /app/uwsgi /etc/uwsgi
+
+rm /etc/nginx/nginx.conf
+ln -s /app/nginx.conf /etc/nginx/nginx.conf
+
+systemctl enable emperor.uwsgi
+systemctl enable nginx
+
+exec "$@"
